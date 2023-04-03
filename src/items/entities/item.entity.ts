@@ -1,8 +1,11 @@
 import { Field, ID, Int, ObjectType } from '@nestjs/graphql';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
+  ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -14,24 +17,34 @@ export class Item {
   @PrimaryGeneratedColumn('uuid')
   @Field(() => ID)
   id: string;
+
   @Column()
   @Field(() => Int)
   nroreclamo: number;
+
   @Column()
   @Field(() => String)
-  title: string;
+  titulo: string;
+
   @Column()
   @Field(() => String)
-  description: string;
+  descripcion: string;
+
   @Column({ nullable: true })
   @Field(() => String)
   detalleCompraCSV: string;
 
-  @OneToOne(() => CsvData, (csvData) => csvData.id, {
+  @Field(() => Boolean)
+  @Column({ default: true })
+  pendiente: boolean;
+
+  @ManyToOne(() => User, (user) => user.items, { nullable: false, eager: true })
+  @Index('userId-index')
+  @Field(() => User)
+  user: User;
+
+  @OneToOne(() => CsvData, (csv) => csv.items, {
     eager: true,
-    cascade: true,
-    onDelete: 'CASCADE',
   })
-  @JoinColumn()
   csv: CsvData;
 }

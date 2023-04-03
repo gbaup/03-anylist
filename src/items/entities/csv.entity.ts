@@ -24,12 +24,9 @@ export class CsvData {
   @Column()
   nroproducto: number;
 
-  @OneToOne(() => Item, (item) => item.detalleCompraCSV, {
-    cascade: true,
+  @OneToOne(() => Item, (item) => item.csv, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   items: Item;
-  // @OneToOne(() => Item, (item) => item.csv)
-  // @JoinColumn()
-  // itemData: Item;
 }

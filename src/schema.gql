@@ -2,20 +2,32 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Item {
-  id: ID!
-  nroreclamo: Int!
-  title: String!
-  description: String!
-  detalleCompraCSV: String!
-}
-
 type User {
   id: ID!
   fullName: String!
   email: String!
   roles: [String!]!
   isActive: Boolean!
+  items: [Item!]!
+}
+
+type Item {
+  id: ID!
+  nroreclamo: Int!
+  titulo: String!
+  descripcion: String!
+  detalleCompraCSV: String!
+  pendiente: Boolean!
+  user: User!
+}
+
+type ItemResponse {
+  id: ID!
+  nroreclamo: Int!
+  titulo: String!
+  descripcion: String!
+  detalleCompraCSV: String!
+  estado: String!
 }
 
 type AuthResponse {
@@ -24,34 +36,63 @@ type AuthResponse {
 }
 
 type Query {
-  allItems: [Item!]!
-  item(nroreclamo: Int!): Item!
-  items(term: String!): [Item!]!
-  users: [User!]!
-  user(id: ID!): User!
+  """
+  Permite traer los reclamos asociados al usuario loggeado. En caso de ser admin, devuelve todos los reclamos.
+  """
+  allReclamos(estado: String = "pendiente"): [ItemResponse!]!
+
+  """
+  Busca reclamos por "nroreclamo" asociados a ese usuario. En caso de ser admin, busca entre todos los reclamos.
+  """
+  oneReclamo(nroreclamo: Int!): Item!
+
+  """
+  Exclusivo para admin. Busca entre todos los reclamos por palabra que contenga el titulo.
+  """
+  manyReclamos(term: String!): [ItemResponse!]!
+
+  """Exclusivo para admin. Trae todos los usuarios registrados."""
+  allUsers(roles: [ValidRoles!] = []): [User!]!
+
+  """Exclusivo para admin. Busca usuario por su id"""
+  userById(id: ID!): User!
+
+  """Exclusivo para admin. Busca usuario por email."""
+  userByEmail(email: String!): User!
   revalidate: AuthResponse!
 }
 
+enum ValidRoles {
+  admin
+  user
+}
+
 type Mutation {
-  createItem(createItemInput: CreateItemInput!): Item!
+  crearReclamo(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!, nroreclamo: Int!): Item!
-  removeItem(nroreclamo: Int!): Item!
+
+  """
+  Exclusivo para admin. Permite marcar un reclamo como "resuelto" ingresando el nroreclamo
+  """
+  removeReclamo(nroreclamo: Int!): String!
+
+  """Exclusivo para admin. Marca como "inactivo" un usuario"""
   blockUser(id: ID!): User!
   signup(signUpInput: SignUpInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
 }
 
 input CreateItemInput {
-  title: String!
-  description: String!
+  titulo: String!
+  descripcion: String!
   date: String!
   nrofactura: Int!
   nroproducto: Int!
 }
 
 input UpdateItemInput {
-  title: String
-  description: String
+  titulo: String
+  descripcion: String
   date: String
   nrofactura: Int
   nroproducto: Int

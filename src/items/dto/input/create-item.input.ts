@@ -8,19 +8,23 @@ export class CreateItemInput {
   @IsNotEmpty()
   @MaxLength(20)
   @Field(() => String)
-  title: string;
+  titulo: string;
+
   @IsString()
   @IsNotEmpty()
   @MaxLength(400)
   @Field(() => String)
-  description: string;
+  descripcion: string;
+
   @Field(() => String)
   @IsNotEmpty()
   @IsDateCustom()
   date: string;
+
   @Field(() => Int)
   @IsNotEmpty()
   nrofactura: number;
+
   @Field(() => Int)
   @IsNotEmpty()
   nroproducto: number;

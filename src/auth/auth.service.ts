@@ -26,15 +26,7 @@ export class AuthService {
     const token = this.getJwtToken(user.id);
     return { token, user };
   }
-  async login(loginInput: LoginInput): Promise<AuthResponse> {
-    const { email, password } = loginInput;
-    const user = await this.usersService.findOneByEmail(email);
-    if (!bcrypt.compareSync(password, user.password)) {
-      throw new BadRequestException('Email / password do not match');
-    }
-    const token = this.getJwtToken(user.id);
-    return { token, user };
-  }
+
   async validateUser(id: string): Promise<User> {
     const user = await this.usersService.findOneById(id);
     if (!user.isActive) {
@@ -42,6 +34,18 @@ export class AuthService {
     }
     delete user.password;
     return user;
+  }
+  async login(loginInput: LoginInput): Promise<AuthResponse> {
+    const { email, password } = loginInput;
+    const user = await this.usersService.findOneByEmail(email);
+    if (!user.isActive) {
+      throw new UnauthorizedException('Usuario no activo');
+    }
+    if (!bcrypt.compareSync(password, user.password)) {
+      throw new BadRequestException('Email / password do not match');
+    }
+    const token = this.getJwtToken(user.id);
+    return { token, user };
   }
   revalidateToken(user: User): AuthResponse {
     const token = this.getJwtToken(user.id);
