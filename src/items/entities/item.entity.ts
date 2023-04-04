@@ -46,4 +46,8 @@ export class Item {
     eager: true,
   })
   csv: CsvData;
+
+  @Field(() => String)
+  @Column({ default: null, nullable: true })
+  image: string;
 }

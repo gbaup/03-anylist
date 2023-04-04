@@ -19,6 +19,7 @@ type Item {
   detalleCompraCSV: String!
   pendiente: Boolean!
   user: User!
+  image: String!
 }
 
 type ItemResponse {
