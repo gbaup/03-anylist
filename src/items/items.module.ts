@@ -11,5 +11,6 @@ import { CsvData } from './entities/csv.entity';
     TypeOrmModule.forFeature([Item]),
     TypeOrmModule.forFeature([CsvData]),
   ],
+  exports: [ItemsService, TypeOrmModule],
 })
 export class ItemsModule {}

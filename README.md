@@ -4,28 +4,30 @@
 
 # Dev
 
-1. Clonar proyecto
-2. Copiar el `.env.template` y renombrarlo a `.env`
-3. Ejecutar
+1. Clonar proyecto.
+2. Copiar el `.env.template` y renombrarlo a `.env`.
+3. Ejecutar:
 
 ```
 npm i
 ```
 
-4. Levantar la imagen (Docker desktop)
+4. Levantar la imagen (Docker desktop):
 
 ```
 docker-compose up -d
 ```
 
-5. Levantar el backend de nest
+5. Levantar el backend de nest:
 
 ```
 npm run start:dev
 ```
 
-6. Visitar el sitio
+6. Visitar el sitio:
 
 ```
 localhost:3000/graphql
 ```
+
+7. Ejecutar la mutation "seed" para llenar la base de datos.
