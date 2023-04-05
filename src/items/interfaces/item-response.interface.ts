@@ -19,4 +19,7 @@ export class ItemResponse {
 
   @Field(() => String)
   estado: string;
+
+  @Field(() => String, { nullable: true })
+  image?: string;
 }

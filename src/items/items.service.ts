@@ -50,6 +50,7 @@ export class ItemsService {
       detalleCompraCSV: item.detalleCompraCSV,
       estado: item.pendiente ? 'pendiente' : 'resuelto',
       userId: item.user.id,
+      image: item.image,
     }));
 
     return { allItemsNew };
@@ -118,6 +119,7 @@ export class ItemsService {
       descripcion: item.descripcion,
       detalleCompraCSV: item.detalleCompraCSV,
       estado: item.pendiente ? 'pendiente' : 'resuelto',
+      image: item.image,
     }));
   }
 

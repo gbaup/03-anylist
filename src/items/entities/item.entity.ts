@@ -47,7 +47,7 @@ export class Item {
   })
   csv: CsvData;
 
-  @Field(() => String)
   @Column({ nullable: true })
+  @Field(() => String)
   image: string;
 }
