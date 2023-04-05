@@ -33,6 +33,8 @@ export class ItemsService {
     reclamo.nroreclamo = (await this.itemsRepository.maximum('nroreclamo')) + 1;
     reclamo.csv = csvData;
     reclamo.user = user;
+    reclamo.image = createItemInput.image;
+    reclamo.pendiente = createItemInput.pendiente;
 
     await this.itemsRepository.save(reclamo);
 

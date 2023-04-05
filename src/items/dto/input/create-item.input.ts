@@ -1,5 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from 'class-validator';
 import { IsDateCustom } from 'src/items/validator/date.validator';
 
 @InputType()
@@ -28,4 +28,12 @@ export class CreateItemInput {
   @Field(() => Int)
   @IsNotEmpty()
   nroproducto: number;
+
+  @Field(() => String)
+  @IsOptional()
+  image?: string;
+
+  @Field(() => Boolean)
+  @IsOptional()
+  pendiente?: boolean;
 }

@@ -48,6 +48,6 @@ export class Item {
   csv: CsvData;
 
   @Field(() => String)
-  @Column({ default: null, nullable: true })
+  @Column({ nullable: true })
   image: string;
 }

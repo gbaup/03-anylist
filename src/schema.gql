@@ -92,6 +92,8 @@ input CreateItemInput {
   date: String!
   nrofactura: Int!
   nroproducto: Int!
+  image: String!
+  pendiente: Boolean!
 }
 
 input UpdateItemInput {
@@ -100,6 +102,8 @@ input UpdateItemInput {
   date: String
   nrofactura: Int
   nroproducto: Int
+  image: String
+  pendiente: Boolean
 }
 
 input SignUpInput {

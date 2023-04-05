@@ -64,7 +64,7 @@ export class SeedService {
   async loadItem(user: User, user2: User): Promise<void> {
     const itemsPromises = [];
     for (const item of SEED_ITEMS) {
-      if (item.nroreclamo % 2 === 0) {
+      if (item.par % 2 === 0) {
         itemsPromises.push(await this.itemsService.create(item, user));
       } else {
         itemsPromises.push(await this.itemsService.create(item, user2));

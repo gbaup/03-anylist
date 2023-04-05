@@ -7,6 +7,7 @@ import { ItemsService } from 'src/items/items.service';
 import { S3 } from 'aws-sdk';
 
 import { ConfigService } from '@nestjs/config';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class ImagesService {
@@ -23,9 +24,21 @@ export class ImagesService {
       region: this.configService.get<string>('AWS_REGION'),
     });
   }
-  async upload(image: Express.Multer.File, nroreclamo: number) {
-    const item = await this.itemsRepository.findOneBy({ nroreclamo });
-    if (!item) throw new NotFoundException(`Reclamo #${nroreclamo} no existe`);
+  async upload(image: Express.Multer.File, nroreclamo: number, user: User) {
+    const item = await this.itemsRepository.findOne({
+      where: {
+        nroreclamo: nroreclamo,
+        user: {
+          id: user.id,
+        },
+      },
+    });
+    console.log(item);
+
+    if (!item)
+      throw new NotFoundException(
+        `Reclamo #${nroreclamo} no existe o no tiene autorización para acceder`,
+      );
     const bucketName = await this.configService.get<string>('AWS_BUCKET_NAME');
 
     const key = `${Date.now().toString()}_${image.originalname}`;
@@ -42,7 +55,6 @@ export class ImagesService {
 
     return imageUrl.Location;
   }
-
   async findOne(nroreclamo: number): Promise<string> {
     const resp = await this.itemsRepository.findOneBy({ nroreclamo });
     return resp.image;
