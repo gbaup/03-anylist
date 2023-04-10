@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Post,
   Param,
   UseInterceptors,
@@ -28,10 +27,5 @@ export class ImagesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     return this.imagesService.upload(file, nroreclamo, user);
-  }
-
-  @Get(':nroreclamo')
-  async findOne(@Param('nroreclamo') nroreclamo: number) {
-    return this.imagesService.findOne(nroreclamo);
   }
 }

@@ -8,6 +8,7 @@ import { CreateItemInput, UpdateItemInput } from './dto/input';
 import { CsvData } from './entities/csv.entity';
 import { Item } from './entities/item.entity';
 import { ItemResponse } from './interfaces/item-response.interface';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
 @Injectable()
 export class ItemsService {
@@ -33,7 +34,7 @@ export class ItemsService {
     reclamo.nroreclamo = (await this.itemsRepository.maximum('nroreclamo')) + 1;
     reclamo.csv = csvData;
     reclamo.user = user;
-    reclamo.image = createItemInput.image;
+    reclamo.image = '';
     reclamo.pendiente = createItemInput.pendiente;
 
     await this.itemsRepository.save(reclamo);
@@ -55,19 +56,32 @@ export class ItemsService {
 
     return { allItemsNew };
   }
-  async findAll(estadoItem: EstadoItem, user: User): Promise<ItemResponse[]> {
+  async findAll(
+    estadoItem: EstadoItem,
+    user: User,
+    paginationArgs: PaginationArgs,
+  ): Promise<ItemResponse[]> {
     const { estado } = estadoItem;
+
+    const { limit, offset } = paginationArgs;
+
     const { allItemsNew } = await this.getAllItems();
+
+    const startIndex = offset ? offset : 0;
+    const endIndex = startIndex + limit;
 
     if (estado === 'todos') {
       if (user.roles.includes(ValidRoles.admin)) {
-        return allItemsNew;
+        return allItemsNew.slice(startIndex, endIndex);
       }
-      return allItemsNew.filter((item) => item.userId === user.id);
+      return allItemsNew
+        .filter((item) => item.userId === user.id)
+        .slice(startIndex, endIndex);
     }
-    const response = allItemsNew.filter(
-      (item) => item.estado === estado.toLowerCase().trim(),
-    );
+
+    const response = allItemsNew
+      .filter((item) => item.estado === estado.toLowerCase().trim())
+      .slice(startIndex, endIndex);
     if (response.length === 0)
       throw new NotFoundException(
         `No se encontraron reclamos. Revisar parámetro de búsqueda (todos o resuelto)`,
@@ -97,30 +111,40 @@ export class ItemsService {
     return reclamo;
   }
 
-  async findMany(term: string): Promise<ItemResponse[]> {
+  async findMany(
+    term: string,
+    paginationArgs: PaginationArgs,
+  ): Promise<ItemResponse[]> {
     const termLower = term.toLowerCase().trim();
     const { allItemsNew } = await this.getAllItems();
+    const { limit, offset } = paginationArgs;
+    const startIndex = offset ? offset : 0;
+    const endIndex = startIndex + limit;
+
     if (termLower === '') {
       return allItemsNew.filter((item) => item.estado === 'pendiente');
     }
     const reclamos = await this.itemsRepository.find({
       where: { titulo: Like(`%${termLower}%`) },
     });
+    console.log({ limit }, { offset });
 
     if (reclamos.length === 0) {
       throw new NotFoundException(
         `No hay reclamos con la palabra clave: ${termLower}`,
       );
     }
-    return reclamos.map((item) => ({
-      id: item.id,
-      nroreclamo: item.nroreclamo,
-      titulo: item.titulo,
-      descripcion: item.descripcion,
-      detalleCompraCSV: item.detalleCompraCSV,
-      estado: item.pendiente ? 'pendiente' : 'resuelto',
-      image: item.image,
-    }));
+    return reclamos
+      .map((item) => ({
+        id: item.id,
+        nroreclamo: item.nroreclamo,
+        titulo: item.titulo,
+        descripcion: item.descripcion,
+        detalleCompraCSV: item.detalleCompraCSV,
+        estado: item.pendiente ? 'pendiente' : 'resuelto',
+        image: item.image,
+      }))
+      .slice(startIndex, endIndex);
   }
 
   async update(

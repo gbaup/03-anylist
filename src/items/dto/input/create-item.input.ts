@@ -29,11 +29,11 @@ export class CreateItemInput {
   @IsNotEmpty()
   nroproducto: number;
 
-  @Field(() => String)
+  // @Field(() => String, { defaultValue: null })
   @IsOptional()
   image?: string;
 
-  @Field(() => Boolean)
+  // @Field(() => Boolean, { defaultValue: true })
   @IsOptional()
   pendiente?: boolean;
 }

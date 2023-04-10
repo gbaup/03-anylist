@@ -1,14 +1,15 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { Item } from './entities/item.entity';
-import { CreateItemInput, UpdateItemInput } from './dto/input';
 import { ItemResponse } from './interfaces/item-response.interface';
+import { CreateItemInput, UpdateItemInput } from './dto/input';
 import { EstadoItem } from './dto/args/estado.args';
-import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 import { ValidRoles } from 'src/auth/enums/valid-roles.enum';
 import { User } from 'src/users/entities/user.entity';
+import { PaginationArgs } from 'src/common/dto/args/pagination.args';
 
 @Resolver(() => Item)
 @UseGuards(JwtAuthGuard)
@@ -26,13 +27,14 @@ export class ItemsResolver {
   @Query(() => [ItemResponse], {
     name: 'allReclamos',
     description:
-      'Permite traer los reclamos asociados al usuario loggeado. En caso de ser admin, devuelve todos los reclamos.',
+      'Permite traer los reclamos asociados al usuario loggeado. En caso de ser admin, devuelve todos los reclamos. Tener en cuenta que naturalmente devuelve aquellos relcamos que figuran como "pendientes". En caso de querer que devuelva TODOS los reclamos, se debe agregar la variable - "estado": "todos". Se puede implementar paginacion con los valores offset y limit.',
   })
-  findAll(
-    @Args() estadoItem: EstadoItem,
+  async findAll(
     @CurrentUser([ValidRoles.user]) user: User,
+    @Args() estadoItem: EstadoItem,
+    @Args() paginationArgs: PaginationArgs,
   ): Promise<ItemResponse[]> {
-    return this.itemsService.findAll(estadoItem, user);
+    return this.itemsService.findAll(estadoItem, user, paginationArgs);
   }
 
   @Query(() => Item || [Item], {
@@ -54,9 +56,10 @@ export class ItemsResolver {
   })
   findMany(
     @Args('term', { type: () => String }) term: string,
+    @Args() paginationArgs: PaginationArgs,
     @CurrentUser([ValidRoles.admin]) user: User,
   ) {
-    return this.itemsService.findMany(term);
+    return this.itemsService.findMany(term, paginationArgs);
   }
 
   @Mutation(() => Item)

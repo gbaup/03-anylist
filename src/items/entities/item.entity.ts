@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { CsvData } from './csv.entity';
+import { IsOptional } from 'class-validator';
 
 @Entity({ name: 'reclamos' })
 @ObjectType()
@@ -17,6 +18,7 @@ export class Item {
   @Field(() => ID)
   id: string;
 
+  @Index({ unique: true })
   @Column()
   @Field(() => Int)
   nroreclamo: number;
@@ -48,6 +50,7 @@ export class Item {
   csv: CsvData;
 
   @Column({ nullable: true })
+  @IsOptional()
   @Field(() => String)
-  image: string;
+  image?: string;
 }

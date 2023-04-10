@@ -33,7 +33,6 @@ export class ImagesService {
         },
       },
     });
-    console.log(item);
 
     if (!item)
       throw new NotFoundException(
@@ -51,12 +50,7 @@ export class ImagesService {
     const imageUrl = await this.s3.upload(params).promise();
     item.image = imageUrl.Location;
     await this.itemsRepository.save(item);
-    console.log(this.s3.getObject());
 
     return imageUrl.Location;
-  }
-  async findOne(nroreclamo: number): Promise<string> {
-    const resp = await this.itemsRepository.findOneBy({ nroreclamo });
-    return resp.image;
   }
 }

@@ -1,9 +1,10 @@
 import { ArgsType, Field } from '@nestjs/graphql';
-import { IsOptional } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 @ArgsType()
 export class EstadoItem {
   @Field(() => String, { nullable: true, defaultValue: 'pendiente' })
   @IsOptional()
+  @IsString()
   estado?: string;
 }
