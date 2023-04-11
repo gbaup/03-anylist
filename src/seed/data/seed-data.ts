@@ -86,12 +86,32 @@ export const SEED_ITEMS = [
   },
   {
     titulo: 'Garantia',
-    descripcion: 'Se rompió la pantalla de mi celular y quiero cambiarlaaaa.',
+    descripcion: 'Se rompió la pantalla de mi celular y quiero cambiarla.',
     par: 6,
     date: '22/02/2022',
     nrofactura: 769033,
     nroproducto: 861124,
     pendiente: false,
     image: 'https://imagenes-reclamos.s3.amazonaws.com/pantalla-rota.jpeg',
+  },
+  {
+    titulo: 'Garantia',
+    descripcion:
+      'Mi celular dejó de funcionar. Quiero hacer uso de la garantía.',
+    par: 7,
+    date: '22/10/2020',
+    nrofactura: 649663,
+    nroproducto: 102940,
+    pendiente: false,
+  },
+  {
+    titulo: 'Garantia',
+    descripcion:
+      'Mi celular dejó de funcionar. Quiero hacer uso de la garantía',
+    par: 8,
+    date: '22/03/2023',
+    nrofactura: 986248,
+    nroproducto: 198984,
+    pendiente: true,
   },
 ];

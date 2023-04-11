@@ -60,7 +60,7 @@ export class SeedService {
 
     return users;
   }
-  ////////////
+
   async loadItem(user: User, user2: User): Promise<void> {
     const itemsPromises = [];
     for (const item of SEED_ITEMS) {

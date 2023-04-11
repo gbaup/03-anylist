@@ -51,6 +51,6 @@ export class Item {
 
   @Column({ nullable: true })
   @IsOptional()
-  @Field(() => String)
+  @Field(() => String, { nullable: true })
   image?: string;
 }
