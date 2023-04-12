@@ -30,4 +30,5 @@ npm run start:dev
 localhost:3000/graphql
 ```
 
-7. Ejecutar la mutation "seed" para llenar la base de datos.
+7. Ejecutar la mutation "seed" para llenar la base de datos. Leer descripción para agregar más items.
+8. Para más información sobre el funcionamiento de la API, leer el archivo <a href="https://imagenes-reclamos.s3.amazonaws.com/api-graphql.pdf">api-graphql</a>
