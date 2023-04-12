@@ -83,8 +83,10 @@ type Mutation {
   signup(signUpInput: SignUpInput!): AuthResponse!
   login(loginInput: LoginInput!): AuthResponse!
 
-  """Ejecuta la construcción de la base de datos."""
-  seed: Boolean!
+  """
+  Ejecuta la construcción de la base de datos. Opcionalmente, se pueden cargar items adicionales asignando "true" a la variable "loadAdditionalItems". 
+  """
+  seed(loadAdditionalItems: Boolean! = false): Boolean!
 }
 
 input CreateItemInput {

@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Item } from 'src/items/entities/item.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
-import { SEED_ITEMS, SEED_USERS } from './data/seed-data';
+import { SEED_ITEMS, SEED_USERS, SEED_ITEMS2 } from './data/seed-data';
 import { UsersService } from 'src/users/users.service';
 import { ItemsService } from 'src/items/items.service';
 
@@ -24,7 +24,7 @@ export class SeedService {
     this.isProd = configService.get('STATE') === 'prod';
   }
 
-  async executeSeed(): Promise<boolean> {
+  async executeSeed(loadAdditionalItems: boolean): Promise<boolean> {
     if (this.isProd)
       throw new UnauthorizedException('SEED is not executable on Prod');
 
@@ -36,7 +36,9 @@ export class SeedService {
     const user2 = users[3];
 
     await this.loadItem(user1, user2);
-
+    if (loadAdditionalItems) {
+      await this.loadAdditionalItems();
+    }
     return true;
   }
   async deleteDatabase() {
@@ -72,5 +74,20 @@ export class SeedService {
     }
     await Promise.all(itemsPromises);
     return itemsPromises[0];
+  }
+  async loadAdditionalItems(): Promise<void> {
+    const users = await this.usersRepository.find();
+    const user1 = users[0];
+    const user2 = users[2];
+
+    const itemsPromises = [];
+    for (const item of SEED_ITEMS2) {
+      if (item.par % 2 === 0) {
+        itemsPromises.push(await this.itemsService.create(item, user1));
+      } else {
+        itemsPromises.push(await this.itemsService.create(item, user2));
+      }
+    }
+    await Promise.all(itemsPromises);
   }
 }
