@@ -127,7 +127,6 @@ export class ItemsService {
     const reclamos = await this.itemsRepository.find({
       where: { titulo: Like(`%${termLower}%`) },
     });
-    console.log({ limit }, { offset });
 
     if (reclamos.length === 0) {
       throw new NotFoundException(

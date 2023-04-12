@@ -68,7 +68,7 @@ export class UsersService {
   async block(id: string): Promise<User> {
     const userBlocked = await this.findOneById(id);
     userBlocked.isActive = false;
-    console.log(userBlocked);
+
     await this.usersRepository.save(userBlocked);
     return userBlocked;
   }
