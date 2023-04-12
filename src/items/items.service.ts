@@ -63,7 +63,12 @@ export class ItemsService {
   ): Promise<ItemResponse[]> {
     const { estado } = estadoItem;
 
-    const { limit, offset } = paginationArgs;
+    let { limit, offset } = paginationArgs;
+
+    if (!limit || !offset) {
+      limit = 5;
+      offset = 0;
+    }
 
     const { allItemsNew } = await this.getAllItems();
 
