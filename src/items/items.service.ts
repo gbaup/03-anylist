@@ -65,7 +65,7 @@ export class ItemsService {
 
     let { limit, offset } = paginationArgs;
 
-    if (!limit || !offset) {
+    if (limit === null || offset === null) {
       limit = 5;
       offset = 0;
     }
