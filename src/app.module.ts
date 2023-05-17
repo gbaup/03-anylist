@@ -11,17 +11,30 @@ import { AuthModule } from './auth/auth.module';
 import { ImagesModule } from './images/images.module';
 import { SeedModule } from './seed/seed.module';
 import { CommonModule } from './common/common.module';
+import { JwtService } from '@nestjs/jwt';
+import { ListsModule } from './lists/lists.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+
+    GraphQLModule.forRootAsync({
       driver: ApolloDriver,
-      // debug: false,
-      playground: false,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
-      plugins: [ApolloServerPluginLandingPageLocalDefault()],
+      imports: [AuthModule],
+      inject: [JwtService],
+      useFactory: async (jwtService: JwtService) => ({
+        playground: false,
+        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        plugins: [ApolloServerPluginLandingPageLocalDefault()],
+        context({ req }) {
+          // const token = req.headers.authorization?.replace('Bearer ', '');
+          // if (!token) throw new Error('No token provided');
+          // const payload = jwtService.decode(token);
+          // if (!payload) throw new Error('Invalid token');
+        },
+      }),
     }),
+
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -38,6 +51,7 @@ import { CommonModule } from './common/common.module';
     ImagesModule,
     SeedModule,
     CommonModule,
+    ListsModule,
   ],
   controllers: [],
   providers: [],

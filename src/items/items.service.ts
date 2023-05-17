@@ -180,4 +180,12 @@ export class ItemsService {
 
     return `Reclamo numero #${nroreclamo} resuelto.`;
   }
+
+  async itemsCountByUser(user: User): Promise<number> {
+    return this.itemsRepository.count({
+      where: {
+        user: { id: user.id },
+      },
+    });
+  }
 }

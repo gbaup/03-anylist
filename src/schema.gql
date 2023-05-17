@@ -9,6 +9,8 @@ type User {
   roles: [String!]!
   isActive: Boolean!
   items: [Item!]!
+  lastUpdateBy: User
+  itemsCount: Int!
 }
 
 type Item {
@@ -38,6 +40,17 @@ type AuthResponse {
 }
 
 type Query {
+  revalidate: AuthResponse!
+
+  """Exclusivo para admin. Trae todos los usuarios registrados."""
+  allUsers(roles: [ValidRoles!] = []): [User!]!
+
+  """Exclusivo para admin. Busca usuario por su id"""
+  userById(id: ID!): User!
+
+  """Exclusivo para admin. Busca usuario por email."""
+  userByEmail(email: String!): User!
+
   """
   Permite traer los reclamos asociados al usuario loggeado. En caso de ser admin, devuelve todos los reclamos. Tener en cuenta que naturalmente devuelve aquellos relcamos que figuran como "pendientes". En caso de querer que devuelva TODOS los reclamos, se debe agregar la variable - "estado": "todos". Se puede implementar paginacion con los valores offset y limit.
   """
@@ -52,16 +65,6 @@ type Query {
   Exclusivo para admin. Busca entre todos los reclamos por palabra que contenga el titulo.
   """
   manyReclamos(term: String!, offset: Int = 0, limit: Int = 5): [ItemResponse!]!
-
-  """Exclusivo para admin. Trae todos los usuarios registrados."""
-  allUsers(roles: [ValidRoles!] = []): [User!]!
-
-  """Exclusivo para admin. Busca usuario por su id"""
-  userById(id: ID!): User!
-
-  """Exclusivo para admin. Busca usuario por email."""
-  userByEmail(email: String!): User!
-  revalidate: AuthResponse!
 }
 
 enum ValidRoles {
@@ -70,6 +73,11 @@ enum ValidRoles {
 }
 
 type Mutation {
+  signup(signUpInput: SignUpInput!): AuthResponse!
+  login(loginInput: LoginInput!): AuthResponse!
+
+  """Exclusivo para admin. Marca como "inactivo" un usuario"""
+  blockUser(id: ID!): User!
   crearReclamo(createItemInput: CreateItemInput!): Item!
   updateItem(updateItemInput: UpdateItemInput!, nroreclamo: Int!): Item!
 
@@ -78,15 +86,21 @@ type Mutation {
   """
   removeReclamo(nroreclamo: Int!): String!
 
-  """Exclusivo para admin. Marca como "inactivo" un usuario"""
-  blockUser(id: ID!): User!
-  signup(signUpInput: SignUpInput!): AuthResponse!
-  login(loginInput: LoginInput!): AuthResponse!
-
   """
   Ejecuta la construcción de la base de datos. Opcionalmente, se pueden cargar items adicionales asignando "true" a la variable "loadAdditionalItems". 
   """
   seed(loadAdditionalItems: Boolean! = false): Boolean!
+}
+
+input SignUpInput {
+  fullName: String!
+  email: String!
+  password: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
 }
 
 input CreateItemInput {
@@ -103,15 +117,4 @@ input UpdateItemInput {
   date: String
   nrofactura: Int
   nroproducto: Int
-}
-
-input SignUpInput {
-  fullName: String!
-  email: String!
-  password: String!
-}
-
-input LoginInput {
-  email: String!
-  password: String!
 }
